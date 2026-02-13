@@ -42,8 +42,10 @@ def normalize_vector(v: np.ndarray) -> np.ndarray:
     # TODO: Implement this function
     # Hint: The norm of a complex vector is sqrt(sum of |v_i|^2)
     # In numpy: np.linalg.norm(v) works for complex vectors
-    pass
-
+    norm = np.sum(v * np.conjugate(v)) ** 0.5  # Manual norm calculation
+    if norm == 0:
+        raise ValueError("Cannot normalize the zero vector")
+    return v / norm
 
 # =============================================================================
 # TASK 2: Check if a Matrix is Unitary
@@ -77,7 +79,9 @@ def is_unitary(U: np.ndarray, tolerance: float = 1e-10) -> bool:
     # 1. Compute U† using np.conjugate(U.T) or U.conj().T
     # 2. Multiply U† @ U
     # 3. Compare to identity matrix using np.allclose()
-    pass
+    U_dagger = np.conjugate(U.T)
+    identity = np.eye(U.shape[0])
+    return np.allclose(U_dagger @ U, identity, atol=tolerance)
 
 
 # =============================================================================
@@ -119,7 +123,18 @@ def tensor_product(A: np.ndarray, B: np.ndarray) -> np.ndarray:
     # 3. For each element a_i in A, place a_i * B in the correct position
     #
     # For matrices, it's similar but you need to handle 2D blocks
-    pass
+    A = np.atleast_2d(A)
+    B = np.atleast_2d(B)
+    m, n = A.shape
+    p, q = B.shape
+    result = np.zeros((m * p, n * q), dtype=complex)
+    for i in range(m):
+        for j in range(n):
+            result[i*p:(i+1)*p, j*q:(j+1)*q] = A[i, j] * B
+    # If original inputs were 1D, we should return a 1D array
+    if A.shape[0] == 1 or A.shape[1] == 1:
+        result = result.flatten()
+    return result
 
 
 # =============================================================================
