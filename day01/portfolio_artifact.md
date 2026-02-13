@@ -109,17 +109,20 @@ The **phase** gives us a whole extra dimension of state space!
 
 ## Why This Matters for Computation
 
-Quantum algorithms exploit interference:
+Quantum algorithms exploit **interference** and **entanglement**:
 
 1. **Superposition**: Put the system in a superposition of all possible answers
 2. **Phase manipulation**: Carefully adjust phases of different computational paths
 3. **Interference**: Make wrong answers destructively interfere (cancel out)
-4. **Measurement**: The right answer survives with high probability
+4. **Entanglement**: Create quantum correlations between qubits that cannot be explained classically
+5. **Measurement**: The right answer survives with high probability
 
-This is the essence of:
-- **Grover's algorithm** (search)
-- **Shor's algorithm** (factoring)
-- **Quantum Fourier Transform**
+### The Two Key Resources
+
+- **Interference** (from complex amplitudes): Allows amplitude cancellation and amplification. Critical for algorithms like Deutsch-Jozsa and quantum walks.
+- **Entanglement** (between qubits): Creates non-classical correlations. Essential for Shor's algorithm, quantum error correction, and quantum communication.
+
+Most powerful quantum algorithms (like Shor's factoring) require **both** working together. Interference alone on a single qubit gives limited power; entanglement provides the exponential state space.
 
 None of this would work with mere probabilistic bits.
 
@@ -139,7 +142,7 @@ None of this would work with mere probabilistic bits.
 
 ## Key Takeaway
 
-> **A qubit is not probabilistic—it is in a genuine superposition, with complex amplitudes that can interfere. This interference is the source of quantum computational power.**
+> **A qubit is not probabilistic—it is in a genuine superposition, with complex amplitudes that can interfere. Interference and entanglement together are the sources of quantum computational power.**
 
 The probabilities only emerge at the moment of measurement, when the quantum state "collapses." Before measurement, the qubit exists in a fundamentally different kind of state than any classical system.
 
