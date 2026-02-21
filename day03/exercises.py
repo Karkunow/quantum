@@ -43,7 +43,10 @@ def bell_phi_plus() -> QuantumCircuit:
     # TODO: Create a 2-qubit circuit
     # TODO: Apply H to qubit 0
     # TODO: Apply CNOT with control=0, target=1
-    pass
+    qc = QuantumCircuit(2)
+    qc.h(0)        # Step 1: H on qubit 0
+    qc.cx(0, 1)    # Step 2: CNOT with control
+    return qc
 
 
 def bell_phi_minus() -> QuantumCircuit:
@@ -51,23 +54,34 @@ def bell_phi_minus() -> QuantumCircuit:
     # TODO: Start from |10⟩ (apply X to qubit 0)
     # TODO: Apply H to qubit 0
     # TODO: Apply CNOT with control=0, target=1
-    pass
-
+    qc = QuantumCircuit(2)
+    qc.x(0)        # Step 1: X on qubit 0 to get |10⟩
+    qc.h(0)        # Step 2: H on qubit 0
+    qc.cx(0, 1)    # Step 3: CNOT with control=0, target=1
+    return qc
 
 def bell_psi_plus() -> QuantumCircuit:
     """Build a circuit that creates |Ψ+⟩ = (|01⟩ + |10⟩) / √2."""
     # TODO: Start from |01⟩ (apply X to qubit 1)
     # TODO: Apply H to qubit 0
     # TODO: Apply CNOT with control=0, target=1
-    pass
-
+    qc = QuantumCircuit(2)
+    qc.x(1)        # Step 1: X on qubit 1 to get |01⟩
+    qc.h(0)        # Step 2: H on qubit 0
+    qc.cx(0, 1)    # Step 3: CNOT with control=0, target=1
+    return qc
 
 def bell_psi_minus() -> QuantumCircuit:
     """Build a circuit that creates |Ψ-⟩ = (|01⟩ - |10⟩) / √2."""
     # TODO: Start from |11⟩ (apply X to both qubits)
     # TODO: Apply H to qubit 0
     # TODO: Apply CNOT with control=0, target=1
-    pass
+    qc = QuantumCircuit(2)
+    qc.x(0)        # Step 1: X on qubit 0 to get |11⟩
+    qc.x(1)        # Step 1: X on qubit 1 to get |11⟩
+    qc.h(0)        # Step 2: H on qubit 0
+    qc.cx(0, 1)    # Step 3: CNOT with control=0, target=1
+    return qc
 
 
 # ============================================================
@@ -104,7 +118,11 @@ def is_entangled(qc: QuantumCircuit) -> bool:
         - Entangled if purity < 1 (use tolerance: purity < 0.999)
     """
     # TODO: Implement entanglement detection
-    pass
+    sv = Statevector.from_instruction(qc)
+    dm = DensityMatrix(sv)
+    reduced = partial_trace(dm, [1])
+    purity = np.real(np.trace(reduced.data @ reduced.data))
+    return purity < 0.999
 
 
 # ============================================================
@@ -131,7 +149,11 @@ def ghz_state(n: int = 3) -> QuantumCircuit:
         - Apply CNOT from qubit 0 to qubit 1, 2, ..., n-1
     """
     # TODO: Implement n-qubit GHZ state
-    pass
+    qc = QuantumCircuit(n)
+    qc.h(0)  # Step 1: H on qubit 0
+    for i in range(1, n):
+        qc.cx(0, i)  # Step 2: CNOT from qubit 0 to qubit i
+    return qc
 
 
 def w_state() -> QuantumCircuit:
@@ -151,7 +173,9 @@ def w_state() -> QuantumCircuit:
         qc.initialize([0,1,1,0,1,0,0,0] / np.sqrt(3))
     """
     # TODO: Implement W state (use initialize if needed)
-    pass
+    qc = QuantumCircuit(3)
+    qc.initialize([0,1,1,0,1,0,0,0] / np.sqrt(3))
+    return qc
 
 
 # ============================================================
@@ -191,7 +215,31 @@ def attempt_clone(state_name: str) -> tuple:
         '0' → nothing, '1' → X, '+' → H, '-' → X then H
     """
     # TODO: Implement cloning attempt
-    pass
+    qc = QuantumCircuit(2)
+    if state_name == '0':
+        pass  # |0⟩ is already prepared
+    elif state_name == '1':
+        qc.x(0)  # Prepare |1⟩
+    elif state_name == '+':
+        qc.h(0)  # Prepare |+⟩
+    elif state_name == '-':
+        qc.x(0)  # Prepare |1⟩
+        qc.h(0)  # Then prepare |-⟩
+    else:
+        raise ValueError("Invalid state name. Use '0', '1', '+', or '-'.")
+    
+    qc.cx(0, 1)  # Attempt to clone with CNOT
+    cloning_result = Statevector.from_instruction(qc)
+    # Compute ideal clone
+    if state_name == '0':
+        ideal_clone = np.kron([1, 0], [1, 0])  # |0⟩|0⟩
+    elif state_name == '1':
+        ideal_clone = np.kron([0, 1], [0, 1])  # |1⟩|1⟩
+    elif state_name == '+':
+        ideal_clone = np.kron([1/np.sqrt(2), 1/np.sqrt(2)], [1/np.sqrt(2), 1/np.sqrt(2)])  # |+⟩|+⟩
+    elif state_name == '-':
+        ideal_clone = np.kron([1/np.sqrt(2), -1/np.sqrt(2)], [1/np.sqrt(2), -1/np.sqrt(2)])  # |-⟩|-⟩
+    return cloning_result, Statevector(ideal_clone)
 
 
 # ============================================================
@@ -236,7 +284,11 @@ def bell_correlation(bell_circuit: QuantumCircuit, shots: int = 10000) -> float:
         4. Return P(same) - P(diff)
     """
     # TODO: Implement correlation measurement
-    pass
+    sv = Statevector.from_instruction(bell_circuit)
+    probs = sv.probabilities_dict()
+    p_same = probs.get('00', 0) + probs.get('11', 0)
+    p_diff = probs.get('01', 0) + probs.get('10', 0)
+    return p_same - p_diff
 
 
 # ============================================================
@@ -284,7 +336,7 @@ def run_tests():
         qc_ent.cx(0, 1)
         result = is_entangled(qc_ent)
         assert result is not None, "Function returned None"
-        assert result is True, f"Bell state should be entangled, got {result}"
+        assert result == True, f"Bell state should be entangled, got {result}"
         print("   Bell state (entangled): ✅")
         passed += 1
     except Exception as e:
@@ -297,7 +349,7 @@ def run_tests():
         qc_sep.h(0)
         result = is_entangled(qc_sep)
         assert result is not None, "Function returned None"
-        assert result is False, f"|+0⟩ should be separable, got {result}"
+        assert result == False, f"|+0⟩ should be separable, got {result}"
         print("   |+0⟩ state (separable): ✅")
         passed += 1
     except Exception as e:

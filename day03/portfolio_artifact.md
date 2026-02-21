@@ -120,5 +120,3 @@ This is why circuits are optimized to minimize entangling gates, and why quantum
 > *"Entanglement is the computational resource that separates quantum from classical. Without it, quantum circuits can be efficiently simulated. With it — plus non-Clifford gates — you access an exponentially large state space. I like to explain it to developers as: 'Superposition lets each qubit hold two values, but entanglement lets n qubits hold 2ⁿ values together — not independently, but in a way that's correlated. Those correlations are what algorithms like Shor's and Grover's exploit.'"*
 
 ---
-
-*This artifact demonstrates understanding of entanglement theory, Bell states, partial trace analysis, multi-qubit entanglement classes, and the no-cloning theorem — core knowledge for Quantum Developer Advocate positions at IBM Quantum, Xanadu, Rigetti, Quantinuum, and D-Wave.*

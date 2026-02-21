@@ -65,6 +65,18 @@ Quantum computing derives its power from **two** resources, not one:
 
 > 💬 "Interference lets quantum algorithms cancel wrong answers. Entanglement gives access to an exponentially large state space. Together, they enable quantum advantage — neither alone is sufficient for the most powerful algorithms."
 
+### Entanglement = Information in Correlations, Not in Qubits
+
+A common misconception is that entangled qubits each "carry half" of the information. The reality is subtler:
+
+- Each qubit in a maximally entangled state (e.g. $|\Phi^+\rangle$) has a **completely random** reduced state — measuring it alone gives 0 or 1 with 50/50 probability, with zero information
+- The information lives entirely in the **correlations**: measure both qubits and you'll always get `00` or `11`, never `01` or `10`
+- This is why entangled states **cannot be described qubit-by-qubit** — a 50-qubit entangled state needs $2^{50}$ amplitudes to represent, none of which are "stored" in any individual qubit
+
+**Practical consequence:** This is also why quantum information cannot be read out qubit-by-qubit. Quantum algorithms must use interference at the end to "collapse" the exponential information into a classically readable answer.
+
+> 💬 "If an interviewer asks why entanglement is powerful, don't say 'qubits can be 0 and 1 at the same time.' Say: the information is in the correlations between qubits, not in the qubits themselves. That's what gives you exponential capacity — and it's also why reading quantum results requires clever algorithm design, not just more measurements."
+
 ---
 
 ## 3. The Six Cardinal States
@@ -612,4 +624,214 @@ Active research areas: problem-aware ansatzes, layer-wise training, quantum natu
 
 ---
 
-*Last updated: Day 2 of Quantum DevRel Bootcamp*
+## 17. Partial Trace Mechanics & Purity Tests
+
+### How Partial Trace Works
+
+The **partial trace** extracts a subsystem's reduced density matrix by "tracing out" the rest:
+
+$$\rho_A = \text{Tr}_B(\rho_{AB}) = \sum_k (\mathbb{I}_A \otimes \langle k|_B) \rho_{AB} (\mathbb{I}_A \otimes |k\rangle_B)$$
+
+**Block matrix recipe** for 2 qubits:
+1. Write ρ_AB as 4×4 matrix in blocks: [[A, B], [C, D]]
+2. Each block is 2×2
+3. Tr_B(ρ_AB) = A + D (sum the diagonal blocks)
+
+### Purity Test for Entanglement Detection
+
+$$\text{Tr}(\rho) = 1 \quad \text{(always — normalization)}$$
+$$\text{Tr}(\rho^2) \begin{cases} = 1 & \text{pure state → separable} \\ = 0.5 & \text{maximally entangled} \\ \in (0.5, 1) & \text{partially entangled} \end{cases}$$
+
+**Why Tr(ρ²)?** Squaring the density matrix amplifies deviations from purity. For pure states, ρ² = ρ (projection property). For mixed states, ρ² ≠ ρ.
+
+**Schmidt decomposition symmetry**: In pure bipartite states, both reduced density matrices have **identical purity** — if qubit A is maximally mixed (purity 0.5), so is qubit B. This is mathematically guaranteed.
+
+> 💬 "The partial trace isn't just mathematical machinery — it answers 'what does qubit A look like if I ignore qubit B?' For entangled states, the answer is always: maximally mixed. That's why Tr(ρ²) = 0.5 signals maximal entanglement — the individual qubit has no definite state."
+
+---
+
+## 18. Entanglement Measures & Classification
+
+### Concurrence (2-Qubit Entanglement Measure)
+
+**Calculation steps**:
+1. Compute density matrix ρ from state |ψ⟩
+2. Build spin-flipped matrix: ρ̃ = (σ_y ⊗ σ_y) ρ* (σ_y ⊗ σ_y)
+3. Calculate eigenvalues λ_i of ρ·ρ̃ (4 values)
+4. Concurrence C = max(0, √λ₁ - √λ₂ - √λ₃ - √λ₄)
+
+**Range**: C ∈ [0, 1]
+- C = 0: Separable (no entanglement)
+- C = 1: Maximally entangled (Bell states)
+
+### Tangle Invariant (3-Qubit Systems)
+
+**3-tangle** τ distinguishes fundamental entanglement types:
+
+| State | 3-Tangle | Structure | Properties |
+| :--- | :--- | :--- | :--- |
+| GHZ: (|000⟩ + |111⟩)/√2 | τ = 1 | All-or-nothing | Fragile: lose 1 qubit → fully separable |
+| W: (|001⟩ + |010⟩ + |100⟩)/√3 | τ = 0 | Distributed | Robust: lose 1 qubit → others still entangled |
+
+**Why they can't be converted**: τ is a **SLOCC invariant** (see next section).
+
+### SLOCC Classes
+
+**SLOCC** = Stochastic Local Operations and Classical Communication
+
+**Definition**: Two states are in the same SLOCC class if you can convert between them using:
+- Local unitaries on each qubit (rotation gates)
+- Local measurements with classical feed-forward
+- Allowing some probability of success
+
+**GHZ vs W**: Different SLOCC classes means **fundamentally different entanglement structures**. No sequence of local operations can convert one to the other. They are as different as |0⟩ is from |+⟩ — but at the level of entanglement type.
+
+**Applications**:
+- GHZ: Quantum error correction, precise metrology (fragile but high sensitivity)
+- W: Distributed quantum networks, robust communication (survives qubit loss)
+
+> 💬 "Concurrence is the standard 2-qubit entanglement measure, computed via spin-flip eigenvalues. For 3+ qubits, the 3-tangle distinguishes GHZ (τ=1, all-or-nothing) from W states (τ=0, robust). These are different SLOCC classes — you cannot convert between them with local operations. This matters for protocol design: GHZ for sensing, W for networks."
+
+---
+
+## 19. Higher-Dimensional Entanglement Visualization
+
+### Beyond the Single-Qubit Bloch Sphere
+
+**Challenge**: A single qubit maps cleanly to the Bloch sphere (3 real parameters). Two qubits need 15 real parameters → no simple 3D visualization.
+
+### Visualization Approaches
+
+| Method | What It Shows | Dimensions | Use Case |
+| :--- | :--- | :--- | :--- |
+| **Standard Bloch sphere** | Single qubit pure state | 3D (θ, φ, r=1) | Reduced states of entangled pairs |
+| **Generalized Bloch** | Full 2-qubit space | 15D (not visualizable) | Theoretical framework only |
+| **Majorana representation** | Symmetric multi-qubit states | 2D (Bloch sphere projections) | Spin physics, GHZ analysis |
+| **Hopf fibration** | 2-qubit pure states | 3D fiber bundle | Geometric phase studies |
+| **Q-sphere** | Probability distribution | 3D interactive | Qiskit visualization tool |
+
+### Mixed States on Bloch Sphere
+
+**Pure states** → Surface of sphere (r = 1)  
+**Mixed states** → Interior points (r < 1)
+
+$$r = \sqrt{2 \cdot \text{Purity} - 1}$$
+
+**Example**: Maximally mixed state (Purity = 0.5) → r = 0 (center)
+
+**Entangled qubits**: Each reduced density matrix is mixed → both Bloch vectors at r < 1. For maximally entangled Bell states, both are at the **origin** (r = 0).
+
+> 💬 "Single qubits map to the Bloch sphere beautifully. Multi-qubit systems don't have a simple geometric picture — 2 qubits need 15 parameters. We use reduced Bloch spheres (showing individual qubits), Majorana representations (for symmetric states), or tools like Qiskit's Q-sphere for probability distributions. Mixed states appear inside the Bloch sphere at radius √(2P-1)."
+
+---
+
+## 20. Bell's Theorem & Quantum Non-Locality
+
+### The Core Question
+
+Can quantum correlations be explained by **local hidden variables** (pre-existing properties that Alice and Bob just don't know)?
+
+**Answer**: No. Bell (1964) proved quantum correlations are stronger than anything local realism allows.
+
+### CHSH Inequality (Testable Form)
+
+**Classical bound** (local hidden variables):
+$$|\text{CHSH}| = |E(\theta_1, \phi_1) - E(\theta_1, \phi_2) + E(\theta_2, \phi_1) + E(\theta_2, \phi_2)| \leq 2$$
+
+**Quantum prediction** (entangled state):
+$$|\text{CHSH}| = 2\sqrt{2} \approx 2.828$$
+
+**Violation**: Quantum mechanics exceeds classical bound by 41%!
+
+### Correlation Function E(θ, φ)
+
+$$E(\theta, \phi) = P(\text{same}) - P(\text{different})$$
+
+**Classical**: Piecewise linear, bounded  
+**Quantum** (singlet state |Ψ⁻⟩):
+$$E(\theta, \phi) = -\cos(\theta - \phi)$$
+
+**Key difference**: Smooth, continuous variation with angle — impossible for any local hidden variable theory.
+
+### Measurement Angles
+
+Angles θ and φ specify **measurement basis** on Bloch sphere:
+- θ = 0°: Z-basis (computational basis |0⟩, |1⟩)
+- θ = 90°, φ = 0°: X-basis (|+⟩, |-⟩)
+- θ = 90°, φ = 90°: Y-basis (|+i⟩, |-i⟩)
+
+**Optimal CHSH angles** (maximize violation):
+- Alice: θ₁ = 0°, θ₂ = 45°
+- Bob: φ₁ = 22.5°, φ₂ = 67.5°
+
+**Implementation**: Rotate qubit (e.g., `ry(-θ)`) before measuring in Z-basis.
+
+### Historical Timeline
+
+| Year | Event | Significance |
+| :--- | :--- | :--- |
+| 1935 | EPR paradox (Einstein, Podolsky, Rosen) | "Spooky action at a distance" |
+| 1964 | Bell's theorem | Proves local realism incompatible with QM |
+| 1969 | CHSH inequality | Experimentally testable version |
+| 1972 | Freedman-Clauser | First experimental violation |
+| 1982 | Aspect experiments | Closed locality loophole |
+| 2015 | Hensen et al. | Loophole-free Bell test |
+| 2022 | Nobel Prize | Aspect, Clauser, Zeilinger |
+
+### Implications
+
+**What Bell's theorem proves**:
+- Nature is **non-local**: Measurement outcomes are correlated instantaneously
+- **No hidden variables**: Qubit states don't have pre-determined values before measurement
+- **Measurement creates outcomes**: Not just reveals pre-existing properties
+
+**Applications**:
+- **Quantum cryptography** (QKD): Eavesdropping detection via Bell violations
+- **Device-independent protocols**: Security certified by CHSH inequality
+- **Fundamental physics**: Rules out entire classes of classical theories
+
+> 💬 "Bell's theorem is THE proof that quantum mechanics is fundamentally different from classical physics. The CHSH inequality gives a numerical bound: local hidden variables can achieve at most 2.0, while entangled qubits reach 2√2 ≈ 2.828. This has been verified in experiments (2022 Nobel Prize) and now powers quantum cryptography — eavesdroppers violate Bell inequalities and get detected."
+
+---
+
+## 21. Classical vs Quantum Correlations
+
+### The Fundamental Distinction
+
+**Classical correlations**: Based on **pre-existing properties**
+- Example: Opposite-color socks in boxes
+- Properties exist before measurement (you just don't know them)
+- Opening one box reveals pre-determined value
+
+**Quantum correlations**: Based on **measurement-created outcomes**
+- Example: Entangled qubits in |Ψ⁻⟩ = (|01⟩ - |10⟩)/√2
+- Qubits are in **superposition** before measurement (not "secretly" 0 or 1)
+- Measurement creates the outcome + instantaneous correlation
+
+### Why Quantum Is Stronger
+
+| Aspect | Classical (Hidden Variables) | Quantum (Entanglement) |
+| :--- | :--- | :--- |
+| **Properties** | Pre-determined, just unknown | Don't exist until measured |
+| **Correlation source** | Shared preparation | Measurement participation |
+| **Angle dependence** | Piecewise linear | Smooth: -cos(θ - φ) |
+| **CHSH bound** | ≤ 2.0 | 2√2 ≈ 2.828 |
+| **Information location** | In individual particles | In correlations only |
+
+### The Role of Superposition
+
+**Why measurement angle matters**:
+1. Qubits start in **superposition** (not pre-determined states)
+2. Their superpositions are **correlated** (entanglement)
+3. Measurement **basis choice** (angle θ, φ) affects outcome probabilities
+4. Correlation strength varies **smoothly** with relative angle
+
+**Classical systems**: Changing measurement angle can't create new correlations — the properties were already determined at preparation.
+
+**Quantum systems**: Changing measurement basis fundamentally changes what you're measuring — the qubit doesn't "have" X, Y, and Z values simultaneously.
+
+> 💬 "The difference between classical and quantum correlations: classical → properties exist before measurement (socks in boxes), quantum → measurement creates outcomes from superposition. This is why E(θ,φ) = -cos(θ-φ) is uniquely quantum — classical theories can only produce piecewise linear correlations. Measurement doesn't just reveal information; it participates in determining outcomes."
+
+---
+
+*Last updated: Day 3 of Quantum DevRel Bootcamp*
