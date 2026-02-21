@@ -123,7 +123,7 @@ Each day follows the same structure:
 
 ---
 
-#### Day 5: Noise & Reality (NISQ Era)
+#### Day 5: Noise & Reality (NISQ Era) ✅
 > *Understand why real quantum computers make errors*
 
 **Concepts:**
@@ -328,7 +328,7 @@ Each day follows the same structure:
 | 2 | Single Qubit Rotations in Qiskit | ✅ Complete |
 | 3 | Multi-Qubit Systems & Entanglement | ✅ Complete |
 | 4 | Quantum Circuits as Matrix Operations | ✅ Complete |
-| 5 | Noise & Reality (NISQ Era) | ⬜ |
+| 5 | Noise & Reality (NISQ Era) | ✅ Complete |
 | 6 | Grover's Search Algorithm | ⬜ |
 | 7 | Quantum Fourier Transform | ⬜ |
 | 8 | Variational Quantum Algorithms | ⬜ |
