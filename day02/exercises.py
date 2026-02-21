@@ -38,6 +38,8 @@ def prepare_ket1() -> QuantumCircuit:
     """
     qc = QuantumCircuit(1)
     # TODO: Apply the correct gate to qc
+
+    qc.x(0);
     
     return qc
 
@@ -55,7 +57,7 @@ def prepare_plus() -> QuantumCircuit:
     """Create a circuit that prepares |+⟩ from |0⟩."""
     qc = QuantumCircuit(1)
     # TODO: Apply gate(s) to prepare |+⟩
-    
+    qc.h(0)
     return qc
 
 
@@ -64,7 +66,8 @@ def prepare_minus() -> QuantumCircuit:
     qc = QuantumCircuit(1)
     # TODO: Apply gate(s) to prepare |-⟩
     # Hint: You need TWO gates. First go to |1⟩, then...
-    
+    qc.x(0);
+    qc.h(0);
     return qc
 
 
@@ -95,7 +98,9 @@ def manual_rx(theta: float) -> np.ndarray:
         2x2 complex numpy array
     """
     # TODO: Implement the Rx matrix
-    pass
+    cos = np.cos(theta / 2)
+    sin = np.sin(theta / 2)
+    return np.array([[cos, -1j * sin], [-1j * sin, cos]])
 
 
 def manual_ry(theta: float) -> np.ndarray:
@@ -112,7 +117,9 @@ def manual_ry(theta: float) -> np.ndarray:
         2x2 complex numpy array
     """
     # TODO: Implement the Ry matrix
-    pass
+    cos = np.cos(theta / 2)
+    sin = np.sin(theta / 2)
+    return np.array([[cos, -sin], [sin, cos]], dtype=complex)
 
 
 def manual_rz(theta: float) -> np.ndarray:
@@ -129,7 +136,9 @@ def manual_rz(theta: float) -> np.ndarray:
         2x2 complex numpy array
     """
     # TODO: Implement the Rz matrix
-    pass
+    exp_neg = np.exp(-1j * theta / 2);
+    exp_pos = np.exp(1j * theta / 2);
+    return np.array([[exp_neg, 0], [0, exp_pos]], dtype=complex)
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -159,6 +168,9 @@ def hadamard_from_rotations() -> QuantumCircuit:
     # TODO: Apply rotation gates that compose to Hadamard
     # Hint: Ry(π/2) followed by Rz(π) works!
     
+    qc.rz(np.pi, 0);      # First: Rz(π)
+    qc.ry(np.pi / 2, 0)  # Then: Ry(π/2)
+
     return qc
 
 
@@ -194,7 +206,8 @@ def prepare_arbitrary_state(theta: float, phi: float) -> QuantumCircuit:
     """
     qc = QuantumCircuit(1)
     # TODO: Apply rotation gates to prepare the arbitrary state
-    
+    qc.ry(theta, 0)  # Step 1: Ry(θ)
+    qc.rz(phi, 0)    # Step 2: Rz(φ
     return qc
 
 
