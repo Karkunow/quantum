@@ -103,7 +103,7 @@ Each day follows the same structure:
 
 ---
 
-#### Day 4: Quantum Circuits as Matrix Operations
+#### Day 4: Quantum Circuits as Matrix Operations ✅
 > *Deep circuit-matrix correspondence and universal gate sets*
 
 **Concepts:**
@@ -327,7 +327,7 @@ Each day follows the same structure:
 | 1 | Python Engineering + Quantum State Formalism | ✅ Complete |
 | 2 | Single Qubit Rotations in Qiskit | ✅ Complete |
 | 3 | Multi-Qubit Systems & Entanglement | ✅ Complete |
-| 4 | Quantum Circuits as Matrix Operations | ⬜ |
+| 4 | Quantum Circuits as Matrix Operations | ✅ Complete |
 | 5 | Noise & Reality (NISQ Era) | ⬜ |
 | 6 | Grover's Search Algorithm | ⬜ |
 | 7 | Quantum Fourier Transform | ⬜ |
