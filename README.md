@@ -83,7 +83,7 @@ Each day follows the same structure:
 
 ---
 
-#### Day 3: Multi-Qubit Systems & Entanglement
+#### Day 3: Multi-Qubit Systems & Entanglement ✅
 > *The source of quantum computational power*
 
 **Concepts:**
@@ -326,7 +326,7 @@ Each day follows the same structure:
 |-----|-------|--------|
 | 1 | Python Engineering + Quantum State Formalism | ✅ Complete |
 | 2 | Single Qubit Rotations in Qiskit | ✅ Complete |
-| 3 | Multi-Qubit Systems & Entanglement | ⬜ |
+| 3 | Multi-Qubit Systems & Entanglement | ✅ Complete |
 | 4 | Quantum Circuits as Matrix Operations | ⬜ |
 | 5 | Noise & Reality (NISQ Era) | ⬜ |
 | 6 | Grover's Search Algorithm | ⬜ |
