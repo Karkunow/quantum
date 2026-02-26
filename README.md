@@ -143,7 +143,7 @@ Each day follows the same structure:
 
 ---
 
-#### Day 6: Grover's Search Algorithm
+#### Day 6: Grover's Search Algorithm ✅
 > *Your first real quantum algorithm with provable speedup*
 
 **Concepts:**
@@ -161,9 +161,11 @@ Each day follows the same structure:
 - Analyze success probability vs iteration count
 - Portfolio: *"Grover's Algorithm: A Visual Explanation"*
 
+**Key files:** `day06/exercises.py` · `day06/solutions.py` · `day06/day06_notebook.ipynb`
+
 ---
 
-#### Day 7: Quantum Fourier Transform
+#### Day 7: Quantum Fourier Transform ✅
 > *The mathematical heart of Shor's algorithm*
 
 **Concepts:**
@@ -179,6 +181,8 @@ Each day follows the same structure:
 - Implement quantum phase estimation
 - Demonstrate QPE on a known eigenvalue problem
 - Portfolio: *"From Fourier to Factoring: Why QFT Matters"*
+
+**Key files:** `day07/exercises.py` · `day07/solutions.py` · `day07/day07_notebook.ipynb`
 
 ---
 
@@ -329,8 +333,8 @@ Each day follows the same structure:
 | 3 | Multi-Qubit Systems & Entanglement | ✅ Complete |
 | 4 | Quantum Circuits as Matrix Operations | ✅ Complete |
 | 5 | Noise & Reality (NISQ Era) | ✅ Complete |
-| 6 | Grover's Search Algorithm | ⬜ |
-| 7 | Quantum Fourier Transform | ⬜ |
+| 6 | Grover's Search Algorithm | ✅ Complete |
+| 7 | Quantum Fourier Transform | ✅ Complete |
 | 8 | Variational Quantum Algorithms | ⬜ |
 | 9 | Error Mitigation Techniques | ⬜ |
 | 10 | Technical Talk Preparation | ⬜ |

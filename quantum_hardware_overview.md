@@ -344,13 +344,23 @@ Nitrogen-vacancy (NV) color centers in diamond lattice. Electron spin associated
 - **Flagship system:** IBM Quantum System Two (1000+ qubit roadmap)
 - **Software:** Qiskit (open-source Python framework)
 - **Access:** IBM Quantum Network (cloud access)
+- **Error correction:** Surface code (targeting fault-tolerant systems)
 - **Key differentiator:** Largest quantum community, most mature software stack
+
+### Google Quantum AI
+- **Technology:** Superconducting transmon qubits
+- **Flagship system:** Sycamore processor (70+ qubits), Willow chip (105 qubits, 2024)
+- **Software:** Cirq (open-source Python framework)
+- **Access:** Google Cloud (limited partnership access)
+- **Error correction:** Surface code + Floquet code experiments (demonstrated 2023)
+- **Key differentiator:** Research leadership, quantum supremacy demonstration, below-threshold error correction (Willow, 2024)
 
 ### IonQ
 - **Technology:** Ytterbium-171 trapped ions
 - **Flagship system:** IonQ Forte (35+ qubits, all-to-all connectivity)
 - **Software:** Native support for Cirq, Qiskit, Pennylane
 - **Access:** AWS Braket, Azure Quantum, Google Cloud
+- **Error correction:** Exploring CSS code variants (all-to-all connectivity enables)
 - **Key differentiator:** Highest gate fidelities, all-to-all connectivity
 
 ### Rigetti Computing
@@ -358,6 +368,7 @@ Nitrogen-vacancy (NV) color centers in diamond lattice. Electron spin associated
 - **Flagship system:** Aspen-M series (80+ qubits)
 - **Software:** Quilc compiler, PyQuil Python library
 - **Access:** Rigetti Quantum Cloud Services
+- **Error correction:** Surface code (standard for superconducting)
 - **Key differentiator:** Hybrid quantum-classical computing focus
 
 ### Xanadu
@@ -365,6 +376,7 @@ Nitrogen-vacancy (NV) color centers in diamond lattice. Electron spin associated
 - **Flagship system:** Borealis (216 squeezed-light modes)
 - **Software:** PennyLane (differentiable quantum programming)
 - **Access:** Xanadu Cloud
+- **Error correction:** GKP codes (Gottesman-Kitaev-Preskill for bosonic modes)
 - **Key differentiator:** Room-temperature operation, quantum ML focus
 
 ### Quantinuum
@@ -372,6 +384,7 @@ Nitrogen-vacancy (NV) color centers in diamond lattice. Electron spin associated
 - **Flagship system:** H2 series (56+ qubits)
 - **Software:** TKET compiler, InQuanto chemistry package
 - **Access:** Azure Quantum, AWS Braket
+- **Error correction:** Color codes + Surface code variants
 - **Key differentiator:** Integrated software stack, enterprise focus
 
 ---

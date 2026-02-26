@@ -834,4 +834,231 @@ Angles θ and φ specify **measurement basis** on Bloch sphere:
 
 ---
 
-*Last updated: Day 3 of Quantum DevRel Bootcamp*
+## 22. Transversal Gates & Fault-Tolerant Quantum Computing
+
+### What Are Transversal Gates?
+
+**Transversal implementation**: A logical gate on error-corrected qubits is performed by applying the same physical gate **independently** to each physical qubit, with no interaction between qubit positions.
+
+### Example: 7-Qubit Steane Code
+
+A logical qubit is encoded across 7 physical qubits. For a transversal CNOT between two logical qubits:
+
+```
+Physical qubits (Logical A):  [a₁] [a₂] [a₃] [a₄] [a₅] [a₆] [a₇]
+Physical qubits (Logical B):  [b₁] [b₂] [b₃] [b₄] [b₅] [b₆] [b₇]
+
+Transversal CNOT:
+  Apply CNOT(aᵢ → bᵢ) for each position i independently
+  No interaction between positions i and j
+```
+
+### Why Transversal Gates Are Special
+
+| Property | Benefit |
+| :--- | :--- |
+| **Fault-tolerant** | Errors can't propagate across code structure |
+| **Zero overhead** | Same time depth as single physical gate (~100ns) |
+| **Parallel execution** | All gates run simultaneously |
+| **Error-preserving** | 1 physical error → 1 physical error (doesn't cascade) |
+
+### The Eastin-Knill Theorem
+
+**Key result**: No quantum error correcting code can implement a **universal** gate set transversally.
+
+**What IS transversal** (varies by code):
+- **Steane code**: H, S, CNOT
+- **Surface code**: X, Z only
+- **All codes**: Clifford gates can be transversal in *some* code
+
+**What is NEVER transversal**:
+- ❌ T gate (in any code)
+- ❌ Toffoli gate
+- ❌ Any universal non-Clifford gate
+
+### The Two-Tier Cost Structure
+
+```
+┌─────────────────────────────────────────────────────┐
+│ Clifford Gates (Transversal)                        │
+├─────────────────────────────────────────────────────┤
+│ • H, S, CNOT, X, Y, Z                               │
+│ • Time: 1 gate cycle (~100ns)                       │
+│ • Qubits: 0 extra (uses existing encoded qubits)    │
+│ • Error: ~0.1% (physical gate error)                │
+│ • Cost: ESSENTIALLY FREE                            │
+└─────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────┐
+│ T Gates (Magic State Distillation)                  │
+├─────────────────────────────────────────────────────┤
+│ • Non-Clifford, enables universality                │
+│ • Time: ~1000 error correction cycles (~100μs)      │
+│ • Qubits: ~1000 physical qubits per T gate          │
+│ • Error: ~10⁻¹⁵ (after distillation)                │
+│ • Cost: DOMINATES EVERYTHING                        │
+└─────────────────────────────────────────────────────┘
+```
+
+### Magic State Distillation
+
+Since T is not transversal, it's implemented via **magic state injection**:
+
+1. **Prepare** many noisy copies of |T⟩ = T|+⟩ state
+2. **Distill** using error correction circuits to purify them
+3. **Consume** purified states to implement T via gate teleportation
+4. Typical protocol: **15-to-1 distillation** (15 noisy → 1 clean)
+
+**Cost per T gate**:
+- ~1000 physical qubits for distillation factory
+- ~1000 error correction rounds
+- ~100μs wall-clock time
+
+### Why This Matters
+
+**T-count** becomes the **dominant cost metric** in fault-tolerant QC:
+
+- Shor's algorithm (factor 2048-bit number): ~10⁹ T gates
+- At 1000 qubits/T: Need ~10⁹ × 1000 = 10¹² qubit-operations
+- Clifford gates contribute negligibly to this cost
+
+**Optimization hierarchy**:
+1. Minimize T-count (most important)
+2. Minimize T-depth (parallelization)
+3. Minimize CNOT count (distant third)
+
+### Error Correction Codes
+
+**Steane Code (7-qubit)**:
+- 1 logical → 7 physical qubits
+- Distance d=3 (corrects 1 error)
+- Transversal: H, S, CNOT
+- Not scalable (doesn't tile)
+
+**Surface Code (Industry Standard)**:
+- 1 logical → d² physical qubits
+- 2D lattice, distance d = grid size
+- Transversal: X, Z only
+- High threshold ~1% (tolerates realistic errors)
+- Scalable, hardware-friendly
+- Requires ~1000 qubits/logical at practical error rates
+
+**Both codes** require magic state distillation for T gates.
+
+### Interview-Ready Summary
+
+> 💬 "Transversal gates are implemented by applying the same physical gate independently to each physical qubit in an error-corrected logical qubit — no cross-position interactions, preventing error propagation. Clifford gates (H, S, CNOT) can be transversal in various codes, making them essentially free in fault-tolerant QC. But the Eastin-Knill theorem proves no code has a universal transversal gate set — T gates require magic state distillation at ~1000 physical qubits per gate. This creates a two-tier cost structure where T-count dominates all other metrics, making T-count optimization the central challenge of fault-tolerant compilation."
+
+---
+
+## 23. Quantum Error Correction Codes by Platform
+
+### The Error Correction Landscape
+
+Different quantum hardware platforms use different quantum error correction (QEC) codes based on their physical architecture and connectivity constraints.
+
+### Industry-Standard Codes (2026)
+
+**Surface Code** (Superconducting: IBM, Google, Rigetti):
+- **Structure**: 2D lattice, d² physical qubits → 1 logical qubit
+- **Threshold**: ~1% physical error rate
+- **Transversal gates**: X, Z only
+- **Why dominant**: Matches 2D chip layout, high threshold, mature decoders
+- **Overhead**: ~1000 physical qubits/logical at d=17-21
+- **Companies**: IBM, Google, Rigetti all targeting Surface code
+
+**Floquet Codes** (Google - Experimental):
+- **Innovation**: Measurement schedule provides protection (dynamical QEC)
+- **Status**: Google demonstrated in 2023, potentially better than Surface code
+- **Advantage**: Better code distance per qubit
+- **Challenge**: Newer, less mature than Surface code
+
+**Cat Codes** (Alice & Bob - Commercial):
+- **Platform**: Superconducting with microwave cavities
+- **Encoding**: Bosonic modes (photons in cavity)
+- **Benefit**: Exponential protection against bit-flips with cat size
+- **Limitation**: Still need additional code for phase errors
+- **Status**: 2026 - demonstrated 100μs coherence times
+
+**GKP Codes** (Xanadu - Photonics):
+- **Full name**: Gottesman-Kitaev-Preskill codes
+- **Platform**: Continuous-variable photonic systems
+- **Method**: Encodes in oscillator position/momentum
+- **Advantage**: Single physical mode = logical qubit
+- **Challenge**: Requires squeezed states, complex control
+
+**CSS/Color Codes** (IonQ, Quantinuum - Trapped Ions):
+- **CSS**: Calderbank-Shor-Steane family (includes [[7,1,3]] Steane code)
+- **Color codes**: Hexagonal/triangular lattice variants
+- **Advantage**: Transversal CNOT (more than Surface code's X/Z)
+- **Why viable**: All-to-all connectivity in ion traps
+- **Quantinuum**: Exploring color codes due to flexible connectivity
+
+**LDPC Codes** (AWS Research - Future Focus):
+- **Full name**: Low-Density Parity Check codes
+- **Key advantage**: O(d) or even O(1) overhead vs Surface code's O(d²)
+- **Potential**: 10-100× fewer qubits than Surface code
+- **Challenge**: Requires long-range connectivity or routing
+- **Status**: Hot research area, AWS Center for Quantum Computing investing heavily
+- **Timeline**: Theoretical breakthroughs in 2026, experimental work ongoing
+
+### Code Comparison
+
+| Code | Qubits/Logical | Connectivity | Transversal Gates | Platform |
+|:-----|:---------------|:-------------|:------------------|:---------|
+| **Surface** | d² | 2D nearest-neighbor | X, Z | Superconducting (standard) |
+| **Steane [[7,1,3]]** | 7 | All-to-all | H, S, CNOT | Research only (teaching) |
+| **Color** | ~d² | Hexagonal lattice | CNOT | Quantinuum exploring |
+| **Cat** | 1 mode | Cavity | Bit-flip protected | Alice & Bob |
+| **GKP** | 1 mode | Oscillator | Both quadratures | Xanadu photonics |
+| **LDPC** | O(d) or O(1) | Non-local | Varies | AWS research |
+| **Floquet** | Varies | Dynamic | Measurement-based | Google experiments |
+
+### Why Different Codes for Different Hardware?
+
+**Connectivity constraints**:
+- Superconducting: 2D nearest-neighbor → Surface code fits naturally
+- Trapped ions: All-to-all → Can use CSS/Color codes
+- Photonics: Continuous-variable → GKP codes leverage bosonic modes
+
+**Error characteristics**:
+- Superconducting: ~1% gate error, fast decoherence → need high-threshold code
+- Trapped ions: ~0.1% gate error, long coherence → can use more complex codes
+- Cat qubits: Biased noise (bit-flips suppressed) → specialized codes
+
+### The LDPC Revolution (Potential)
+
+**Current situation**:
+```
+Surface code: 1 logical qubit = 450 physical qubits (d=21)
+Shor's algorithm (2048-bit): ~10⁹ logical qubits
+Total: ~10⁹ × 450 = ~10¹¹ physical qubits (impossible!)
+```
+
+**With LDPC codes**:
+```
+LDPC code: 1 logical qubit = 50 physical qubits (100× better!)
+Shor's algorithm: ~10⁹ × 50 = ~10¹⁰ physical qubits (hard but feasible)
+```
+
+**The catch**: LDPC needs non-local connectivity. Solutions being explored:
+- Novel chip architectures (3D integration)
+- Optical interconnects
+- Hybrid routing strategies
+
+### The Topological Dream (Microsoft)
+
+**Topological qubits** (Majorana zero modes):
+- **Promise**: Hardware-level topological protection
+- **Status**: Not yet experimentally demonstrated (2026)
+- **If successful**: Could combine with surface/color codes for ultra-low overhead
+- **Microsoft's bet**: All-in on topological approach
+- **Risk**: High-risk, high-reward; no working qubit yet
+
+### Interview-Ready Summary
+
+> 💬 "Surface code dominates superconducting platforms (IBM, Google, Rigetti) due to 2D nearest-neighbor matching and high ~1% threshold, requiring ~1000 qubits per logical qubit. But it's not universal: Alice & Bob uses cat codes for biased noise protection, Xanadu uses GKP codes for continuous-variable photonics, and ion trap companies (IonQ, Quantinuum) can explore CSS/color codes thanks to all-to-all connectivity. The real game-changer could be LDPC codes — AWS is investing heavily — offering 10-100× lower overhead than Surface code, though they require solving the non-local connectivity problem. Google's 2023 Floquet code demonstration hints that even for 2D systems, better alternatives to Surface code might emerge. The next decade will likely see a shift from Surface code dominance toward LDPC or hybrid approaches."
+
+---
+
+*Last updated: Day 4 of Quantum DevRel Bootcamp*

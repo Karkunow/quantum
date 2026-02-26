@@ -101,7 +101,3 @@ Yet Toffoli is essential — it's a universal classical gate (can implement AND/
 ## Interview-Ready Takeaway
 
 > *"A gate set is universal if it can approximate any unitary to arbitrary precision. {H, T, CNOT} is the standard example — H and T generate dense rotations in SU(2) via irrational angles, and CNOT extends this to multi-qubit operations. The Solovay-Kitaev theorem guarantees efficient approximation. In practice, the key insight is that Clifford gates are free in fault-tolerant QC but each T gate costs ~1000 physical qubits — so T-count optimization is the defining compilation challenge."*
-
----
-
-*This artifact demonstrates understanding of universal gate sets, the Solovay-Kitaev theorem, circuit-matrix correspondence, and the practical cost structure of quantum gates — core knowledge for Quantum Developer Advocate positions.*
